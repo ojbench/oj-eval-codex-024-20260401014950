@@ -67,6 +67,86 @@ int main() {
             cout << (dq.empty() ? 1 : 0) << "\n";
         } else if (op == "clear") {
             dq.clear();
+        } else if (op == "print") {
+            for (size_t i = 0; i < dq.size(); ++i) {
+                if (i) cout << ' ';
+                cout << dq[i];
+            }
+            cout << "\n";
+        } else if (op.rfind("get", 0) == 0) {
+            // get i or get(i)
+            long long iidx = -1;
+            if (op.find('(') != string::npos) {
+                auto l = op.find('(');
+                auto r = op.find(')', l+1);
+                string num = (r!=string::npos)? op.substr(l+1, r-l-1) : op.substr(l+1);
+                try { iidx = stoll(trim(num)); } catch (...) { iidx = -1; }
+            } else if (op == "get") {
+                if (!(cin >> iidx)) iidx = -1;
+            } else {
+                string num;
+                for (size_t i = 3; i < op.size(); ++i) num.push_back(op[i]);
+                try { iidx = stoll(trim(num)); } catch (...) { iidx = -1; }
+            }
+            if (iidx < 0 || (size_t)iidx >= dq.size()) cout << "error\n";
+            else cout << dq[(size_t)iidx] << "\n";
+        } else if (op.rfind("set", 0) == 0) {
+            // set i x or set(i,x)
+            long long iidx = -1, x = 0;
+            if (op.find('(') != string::npos) {
+                auto l = op.find('(');
+                auto r = op.find(')', l+1);
+                string inside = (r!=string::npos)? op.substr(l+1, r-l-1) : op.substr(l+1);
+                // split by comma
+                auto comma = inside.find(',');
+                string s1 = inside.substr(0, comma);
+                string s2 = comma==string::npos? string() : inside.substr(comma+1);
+                try { iidx = stoll(trim(s1)); } catch (...) { iidx = -1; }
+                try { x = stoll(trim(s2)); } catch (...) { /* keep 0 */ }
+            } else if (op == "set") {
+                if (!(cin >> iidx >> x)) iidx = -1;
+            } else {
+                // setNUM? ignore
+                if (!(cin >> iidx >> x)) iidx = -1;
+            }
+            if (iidx < 0 || (size_t)iidx >= dq.size()) cout << "error\n";
+            else dq[(size_t)iidx] = x;
+        } else if (op.rfind("insert", 0) == 0) {
+            // insert i x or insert(i,x)
+            long long iidx = -1, x = 0;
+            if (op.find('(') != string::npos) {
+                auto l = op.find('(');
+                auto r = op.find(')', l+1);
+                string inside = (r!=string::npos)? op.substr(l+1, r-l-1) : op.substr(l+1);
+                auto comma = inside.find(',');
+                string s1 = inside.substr(0, comma);
+                string s2 = comma==string::npos? string() : inside.substr(comma+1);
+                try { iidx = stoll(trim(s1)); } catch (...) { iidx = -1; }
+                try { x = stoll(trim(s2)); } catch (...) { /* keep 0 */ }
+            } else if (op == "insert") {
+                if (!(cin >> iidx >> x)) iidx = -1;
+            } else {
+                if (!(cin >> iidx >> x)) iidx = -1;
+            }
+            if (iidx < 0 || (size_t)iidx > dq.size()) cout << "error\n";
+            else dq.insert(dq.begin() + (size_t)iidx, x);
+        } else if (op.rfind("erase", 0) == 0) {
+            // erase i or erase(i)
+            long long iidx = -1;
+            if (op.find('(') != string::npos) {
+                auto l = op.find('(');
+                auto r = op.find(')', l+1);
+                string num = (r!=string::npos)? op.substr(l+1, r-l-1) : op.substr(l+1);
+                try { iidx = stoll(trim(num)); } catch (...) { iidx = -1; }
+            } else if (op == "erase") {
+                if (!(cin >> iidx)) iidx = -1;
+            } else {
+                string num;
+                for (size_t i = 5; i < op.size(); ++i) num.push_back(op[i]);
+                try { iidx = stoll(trim(num)); } catch (...) { iidx = -1; }
+            }
+            if (iidx < 0 || (size_t)iidx >= dq.size()) cout << "error\n";
+            else dq.erase(dq.begin() + (size_t)iidx);
         } else if (op.rfind("push_front", 0) == 0) {
             // Format could be: push_front x  OR push_front(x) OR push_front    x
             long long x;
